@@ -1,0 +1,15 @@
+Task 1: Create DOM Input Elements Of Diffrenet types (Text, Number) using inheritence
+Decission: Should I make the form with JS? Or should I create it normally using html?
+
+
+Task2: Add delete button to book cards:
+Logic:
+add simple button
+button.onClick(
+    {
+        check which book?
+            have book-no variable on every book
+            
+        remove the book.
+    }
+)
