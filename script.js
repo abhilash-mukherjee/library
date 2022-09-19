@@ -150,11 +150,21 @@ function createPanel(book)
     panel.dataset.bookId = book.bookID;
     panel.appendChild(createTextElement(book.title,['book-title']));
     panel.appendChild(createTextElement(`by ${book.author}`,['book-author']));
-    panel.appendChild(createTextElement(`${book.pages} pages`,['book-pages']));
-    panel.appendChild(createTextElement(book.haveRead ,['book-isRead']));
-    const btn = createButton('Remove' ,['remove-btn']);
-    panel.appendChild(btn);
-    btn.addEventListener('click',onBookRemoved);
+    panel.appendChild(createTextElement(`${book.pages} pages`,['book-pages']));    
+    let readStatusBtn;
+    if(book.haveRead)
+    {
+        readStatusBtn = createButton('Read',['book-read'])
+    }
+    else{
+        readStatusBtn = createButton('Not Read',['book-not-read'])
+    }
+    
+    panel.appendChild(readStatusBtn);
+    const removeBtn = createButton('Remove' ,['remove-btn']);
+    panel.appendChild(removeBtn);
+    readStatusBtn.addEventListener('click',toogleBookReadStatus);
+    removeBtn.addEventListener('click',onBookRemoved);
     return panel;
 }
 
@@ -182,9 +192,32 @@ function createButton(content,classList)
 
 function onBookRemoved(e)
 {
-    const panel = e.target.closest('.book-panel');
-    const id = panel.getAttribute('data-book-id');
-    const book = myLibrary.find(b => b.bookID === parseInt(id));
+    const book = getBookFromPanel(e.target.closest('.book-panel'));
     removeBook(book);
     updateLibraryUI();
+}
+
+function getBookFromPanel(panel)
+{
+    const id = panel.getAttribute('data-book-id');
+    return myLibrary.find(b => b.bookID === parseInt(id));
+}
+
+function toogleBookReadStatus(e)
+{
+    const panel = e.target.closest('.book-panel');
+    const book = getBookFromPanel(panel);
+    let btn;
+    if(book.haveRead)
+    {
+        book.haveRead = false;
+        btn = createButton('Not Read',['book-not-read']);
+    }
+    else{
+        book.haveRead = true;
+        btn = createButton('Read',['book-read']);
+    }
+    panel.insertBefore(btn,e.target);
+    btn.addEventListener('click',toogleBookReadStatus);
+    panel.removeChild(e.target)
 }
